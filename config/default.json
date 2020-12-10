@@ -1,0 +1,7 @@
+{
+  "PORT":5000,
+  "DB_NAME":"api-todo",
+  "USER_NAME":"root",
+  "PASSWORD": "a@44xtVa",
+  "accessTokenSecret" : "myaccesstokensecretlkdsjiieidisjieoqpoiehjf"
+}
