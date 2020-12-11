@@ -7,18 +7,19 @@ const config = require('config')
 const sequelize = require('./utils/database')
 const itemRouter = require('./routes/item')
 const authRouter = require('./routes/auth')
-
+const userRouter = require('./routes/users')
 
 dotenv.config()
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json());
 
 app.use('/api/auth/',authRouter)
 app.use('/api/item/',itemRouter)
-
+app.use('/api/users/',userRouter)
 
 app.use((req, res, next) => {
   res.sendFile('/index.html')

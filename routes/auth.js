@@ -4,19 +4,24 @@ const bcrypt = require('bcrypt')
 const generateAccessToken = require('../utils/generateAccessToken')
 const router = Router()
 
-router.post('/login', async(req, res) => {
+router.post('/login', async (req, res) => {
   const { email, password } = req.body
 
   try {
-    const user = await User.findOne({where:{email:email}})
+    const user = await User.findOne({ where: { email: email } })
     const areSame = await bcrypt.compare(password, user.password)
 
     if (!areSame) {
-      return res.json({ valid: false, message: "Incorrect login or password" })
+      return res.json({ field:'current_password', message: "Wrong current password" })
     }
 
-    const accessToken = generateAccessToken(email)
-    res.json({valid:true,token:accessToken})
+    const accessToken = generateAccessToken({
+      user_id: user.id,
+      email: user.email,
+      phone: user.phone,
+      name: user.name
+    })
+    res.json({ valid: true, token: accessToken })
 
   } catch (e) {
     res.json({ valid: false, message: e.message })
@@ -24,21 +29,21 @@ router.post('/login', async(req, res) => {
 })
 
 router.post('/register', async (req, res) => {
-  const { name, email, password,confirm } = req.body
+  const { name, email, phone, password, confirm } = req.body
 
-  if(password !== confirm){
-    return res.json({valid:false,message: "Incorrect login or password"})
+  if (password !== confirm) {
+    return res.json({ valid: false, message: "current_password" })
   }
   const hashPassword = await bcrypt.hash(password, 10)
 
   try {
     const user = new User({
-      name, email, password: hashPassword
+      name, email, phone, password: hashPassword
     })
     await user.save()
     res.json({ valid: true })
   } catch (e) {
-    res.json({ valid: false,message: e.message })
+    res.json({ valid: false, message: e.message })
   }
 })
 

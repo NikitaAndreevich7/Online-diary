@@ -1,20 +1,28 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../utils/database');
 
-const item = sequelize.define('Item',{
-  id:{
+const item = sequelize.define('Item', {
+  id: {
     primaryKey: true,
-    autoIncrement:true,
-    allowNull:null,
-    type:Sequelize.INTEGER
+    autoIncrement: true,
+    allowNull: null,
+    type: Sequelize.INTEGER
   },
-  done:{
-    type:Sequelize.BOOLEAN,
+  price:{
+    type: Sequelize.INTEGER,
     allowNull:false
   },
-  title:{
-    type:Sequelize.STRING,
-    allowNull:false
+  title: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  image: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  user_id: {
+    type: Sequelize.INTEGER,
+    allowNull: false
   }
 })
 
