@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const authenticateToken = require('../middleware/auth')
 const router = Router();
 
+//get current user
 router.get('/me', authenticateToken, (req, res) => {
   const { user_id, phone, email } = req.user
   const user = {
@@ -14,6 +15,7 @@ router.get('/me', authenticateToken, (req, res) => {
   res.status(200).json({ valid: true, data: user })
 })
 
+//update current user
 router.put('/me', authenticateToken, async (req, res) => {
   const { name, email, phone, current_password, new_password } = req.body;
 
@@ -35,6 +37,7 @@ router.put('/me', authenticateToken, async (req, res) => {
   }
 })
 
+//get user by id
 router.get('/:id',authenticateToken,async(req,res) =>{
 
   try{
@@ -47,6 +50,7 @@ router.get('/:id',authenticateToken,async(req,res) =>{
   }
 })
 
+//search user
 router.get('/',authenticateToken,async(req,res) =>{
   const {name,email} = req.query
   if(!(name && email)) return res.json({valid:false,message:'Params not found'})
