@@ -4,19 +4,23 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv')
 const config = require('config')
 
+//--routes
 const sequelize = require('./utils/database')
 const itemRouter = require('./routes/item')
 const authRouter = require('./routes/auth')
 const userRouter = require('./routes/users')
 
+//--middeware
+const fileMiddleware = require('./middleware/upload')
+
 dotenv.config()
 const app = express();
-
+global.__basedir = __dirname;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json());
-
+app.use(fileMiddleware.single('file'))
 app.use('/api/auth/',authRouter)
 app.use('/api/item/',itemRouter)
 app.use('/api/users/',userRouter)

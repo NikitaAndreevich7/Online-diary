@@ -16,7 +16,7 @@ const item = sequelize.define('Item', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  image: {
+  imageDef: {
     type: Sequelize.STRING,
     allowNull: false
   },

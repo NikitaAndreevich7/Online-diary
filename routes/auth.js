@@ -1,19 +1,21 @@
 const { Router } = require('express');
 const User = require('../models/user')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
+const {validationResult} = require('express-validator')
+const {registerValidators,loginValidators} = require('../utils/validators')
 const generateAccessToken = require('../utils/generateAccessToken')
 const router = Router()
 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body
+router.post('/login',loginValidators, async (req, res) => {
+  const { email } = req.body
+
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({valid:false,message: errors.array()[0].msg})
+  }
 
   try {
     const user = await User.findOne({ where: { email: email } })
-    const areSame = await bcrypt.compare(password, user.password)
-
-    if (!areSame) {
-      return res.json({ field:'current_password', message: "Wrong current password" })
-    }
 
     const accessToken = generateAccessToken({
       user_id: user.id,
@@ -28,12 +30,14 @@ router.post('/login', async (req, res) => {
   }
 })
 
-router.post('/register', async (req, res) => {
-  const { name, email, phone, password, confirm } = req.body
+router.post('/register',registerValidators, async (req, res) => {
+  const { name, email, phone, password } = req.body
 
-  if (password !== confirm) {
-    return res.json({ valid: false, message: "current_password" })
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({valid:false,message:errors.array()[0].msg})
   }
+
   const hashPassword = await bcrypt.hash(password, 10)
 
   try {
